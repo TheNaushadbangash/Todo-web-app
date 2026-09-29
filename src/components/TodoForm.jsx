@@ -11,21 +11,25 @@ function TodoForm({
   setDueDate,
   category,
   setCategory,
-  darkMode,
 }) {
   const [isListening, setIsListening] = useState(false);
 
-  const glassInput = `w-full rounded-2xl px-5 py-4
-backdrop-blur-xl
-border
-shadow-lg
-transition-all
-duration-300
-${
-  darkMode
-    ? "bg-white/10 border-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-400"
-    : "bg-white/50 border-white/40 text-black placeholder-gray-500 focus:ring-2 focus:ring-blue-400"
-}`;
+  const glassInput = `
+    w-full rounded-2xl px-5 py-4
+    bg-white/50
+    backdrop-blur-xl
+    border border-white/40
+    text-black
+    placeholder-gray-500
+    shadow-lg
+    transition-all duration-300
+    hover:shadow-xl
+    hover:-translate-y-1
+    focus:outline-none
+    focus:ring-2
+    focus:ring-blue-400
+    focus:scale-[1.02]
+  `;
 
   const formatDate = (date) => {
     return date.toISOString().split("T")[0];
@@ -50,7 +54,6 @@ ${
     recognition.maxAlternatives = 1;
 
     setIsListening(true);
-
     recognition.start();
 
     recognition.onresult = (event) => {
@@ -68,7 +71,6 @@ ${
         tomorrow.setDate(tomorrow.getDate() + 1);
 
         setDueDate(formatDate(tomorrow));
-
         voice = voice.replace("tomorrow", "").trim();
       }
 
@@ -89,7 +91,6 @@ ${
       }
 
       // Category
-
       if (voice.includes("study")) {
         setCategory("Study");
       }
@@ -132,8 +133,24 @@ ${
       alert("Speech Error: " + event.error);
     };
   };
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 p-6 rounded-3xl backdrop-blur-xl bg-white/20 dark:bg-white/5 border border-white/20 shadow-xl mb-8">
+    <div
+      className="
+        grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5
+        gap-4
+        p-6
+        rounded-3xl
+        bg-white/40
+        backdrop-blur-2xl
+        border border-white/50
+        shadow-xl
+        mb-8
+        transition-all duration-500
+        hover:shadow-2xl
+        hover:-translate-y-1
+      "
+    >
       {/* Task Input + Mic */}
       <div className="relative xl:col-span-2">
         <input
@@ -149,16 +166,21 @@ ${
           className={`${glassInput} pr-16`}
         />
 
+        {/* Microphone */}
         <button
           type="button"
           disabled={isListening}
           onClick={startListening}
-          className={`absolute right-4 top-1/2 -translate-y-1/2 transition-all duration-300
-        ${
-          isListening
-            ? "text-red-500 animate-pulse scale-125 cursor-not-allowed"
-            : "text-cyan-600 hover:text-cyan-800 hover:scale-110"
-        }`}
+          className={`
+            absolute right-4 top-1/2
+            -translate-y-1/2
+            transition-all duration-300
+            ${
+              isListening
+                ? "text-red-500 animate-pulse scale-125 cursor-not-allowed"
+                : "text-cyan-600 hover:text-cyan-800 hover:scale-125"
+            }
+          `}
         >
           <FaMicrophone size={22} />
         </button>
@@ -199,7 +221,21 @@ ${
       {/* Add Button */}
       <button
         onClick={addTodo}
-        className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 shadow-xl hover:scale-105 hover:shadow-cyan-500/50 transition-all duration-300"
+        className="
+    rounded-2xl
+    bg-gradient-to-r from-cyan-500 to-blue-600
+    text-white
+    font-bold
+    py-3
+    shadow-xl
+    transition-all
+    duration-300
+    hover:scale-105
+    hover:-translate-y-1
+    active:scale-95
+    hover:shadow-2xl
+    hover:shadow-cyan-500/50
+  "
       >
         ➕ Add Task
       </button>

@@ -1,18 +1,11 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  FaTrash,
-  FaEdit,
-  FaFlag,
-  FaGripVertical,
-  FaBullseye,
-} from "react-icons/fa";
+import { FaTrash, FaEdit, FaFlag, FaGripVertical } from "react-icons/fa";
+import { Clock3, CheckCircle2, Play } from "lucide-react";
 
 function TodoItem({ todo, toggleComplete, deleteTodo, editTodo, onFocus }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id: todo.id,
-    });
+    useSortable({ id: todo.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -38,111 +31,220 @@ function TodoItem({ todo, toggleComplete, deleteTodo, editTodo, onFocus }) {
     } else if (diffDays === 0) {
       dueStatus = "🟡 Due Today";
       statusColor = "text-yellow-500";
+    } else if (diffDays === 1) {
+      dueStatus = "🟢 Tomorrow";
+      statusColor = "text-green-500";
     } else {
-      dueStatus = `🟢 ${diffDays} Day${diffDays > 1 ? "s" : ""} Left`;
+      dueStatus = `🟢 ${diffDays} Days Left`;
       statusColor = "text-green-500";
     }
   }
+
+  const priorityStyle =
+    todo.priority === "High"
+      ? "border-l-red-500"
+      : todo.priority === "Medium"
+        ? "border-l-yellow-500"
+        : "border-l-green-500";
+
+  const priorityBadge =
+    todo.priority === "High"
+      ? "bg-red-500"
+      : todo.priority === "Medium"
+        ? "bg-yellow-500"
+        : "bg-green-500";
 
   return (
     <li
       ref={setNodeRef}
       style={style}
-      className={`flex flex-col md:flex-row md:items-center md:justify-between
-      p-6
-      rounded-3xl
-      backdrop-blur-2xl
-      border
-      shadow-xl
-      transition-all duration-300
-      hover:-translate-y-2
-      hover:shadow-2xl
-      ${
-        todo.priority === "High"
-          ? "border-l-[8px] border-l-red-500"
-          : todo.priority === "Medium"
-            ? "border-l-[8px] border-l-yellow-500"
-            : "border-l-[8px] border-l-green-500"
-      }
-      bg-white/60 dark:bg-white/10 border-white/20`}
+      className={`
+    group
+    relative
+    overflow-hidden
+    flex
+    flex-col
+    md:flex-row
+    md:items-center
+    md:justify-between
+    gap-5
+    p-6
+    rounded-3xl
+    bg-white/55
+    backdrop-blur-2xl
+    border
+    border-white/50
+    border-l-[7px]
+    ${priorityStyle}
+    shadow-xl
+    transition-all
+    duration-500
+    hover:-translate-y-2
+    hover:shadow-2xl
+  `}
     >
+      {/* Hover Glow */}
+      <div
+        className="
+          absolute
+          -right-16
+          -top-16
+          w-40
+          h-40
+          rounded-full
+          bg-blue-400/10
+          blur-3xl
+          transition-all
+          duration-500
+          group-hover:scale-150
+        "
+      />
+
       {/* Task Information */}
-      <div>
+      <div className="relative flex-1">
         <div className="flex items-center gap-3">
           {/* Drag Handle */}
           <button
             {...attributes}
             {...listeners}
-            className="cursor-grab active:cursor-grabbing text-gray-500 hover:text-blue-600"
+            className="
+              cursor-grab
+              active:cursor-grabbing
+              text-gray-400
+              hover:text-blue-600
+              transition-all
+              duration-300
+              hover:scale-125
+            "
           >
             <FaGripVertical />
           </button>
 
-          {/* Complete */}
-          <input
-            type="checkbox"
-            checked={todo.completed}
-            onChange={() => toggleComplete(todo.id)}
-          />
+          {/* Checkbox */}
+          <button
+            onClick={() => toggleComplete(todo.id)}
+            className={`
+  w-8
+  h-8
+  rounded-full
+  flex
+  items-center
+  justify-center
+  border-2
+  transition-all
+  duration-300
+  shadow-sm
+  ${
+    todo.completed
+      ? "bg-green-500 border-green-500 text-white scale-110 shadow-green-500/40"
+      : "bg-white/60 border-gray-300 hover:border-blue-500 hover:scale-110 hover:shadow-lg"
+  }
+`}
+          >
+            {todo.completed && <CheckCircle2 size={18} />}
+          </button>
 
-          {/* Task */}
+          {/* Task Text */}
           <span
-            className={`text-xl font-semibold transition-all ${
-              todo.completed
-                ? "line-through text-gray-400"
-                : "text-gray-800 dark:text-white"
-            }`}
+            className={`
+              text-xl
+              font-bold
+              transition-all
+              duration-300
+              ${
+                todo.completed
+                  ? "line-through text-gray-400"
+                  : "text-gray-800 group-hover:text-blue-600"
+              }
+            `}
           >
             {todo.text}
           </span>
         </div>
 
         {/* Created Date */}
-        <p className="text-sm text-gray-500 dark:text-gray-300 mt-3">
-          📅 {todo.createdAt}
+        <p className="text-sm text-gray-500 mt-3 ml-10">
+          📅 Created: {todo.createdAt}
         </p>
 
         {/* Due Date */}
-        <p className="text-sm text-blue-500">
-          ⏰ Due: {todo.dueDate || "No Due Date"}
-        </p>
+        <div className="flex items-center gap-2 mt-2 ml-10">
+          <Clock3 size={16} className="text-blue-500" />
+
+          <p className="text-sm text-blue-500 font-medium">
+            Due: {todo.dueDate || "No Due Date"}
+          </p>
+        </div>
 
         {/* Due Status */}
         {todo.dueDate && (
-          <p className={`text-sm font-semibold ${statusColor}`}>{dueStatus}</p>
+          <p
+            className={`
+              text-sm
+              font-bold
+              mt-2
+              ml-10
+              ${statusColor}
+            `}
+          >
+            {dueStatus}
+          </p>
         )}
 
         {/* Priority */}
-        <div className="mt-2 flex items-center gap-2">
-          <FaFlag />
+        <div className="mt-3 ml-10 flex items-center gap-2">
+          <FaFlag className="text-gray-500" />
 
           <span
-            className={`px-4 py-2 rounded-full text-white text-xs font-bold shadow-lg ${
-              todo.priority === "High"
-                ? "bg-red-500"
-                : todo.priority === "Medium"
-                  ? "bg-yellow-500"
-                  : "bg-green-500"
-            }`}
+            className={`
+              px-4
+              py-1.5
+              rounded-full
+              text-white
+              text-xs
+              font-bold
+              shadow-lg
+              transition-all
+              duration-300
+              hover:scale-105
+              ${priorityBadge}
+            `}
           >
             {todo.priority}
           </span>
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex gap-3 text-xl mt-5 md:mt-0">
-        {/* Focus */}
+      {/* Buttons */}
+      <div className="relative flex gap-3">
+        {/* Focus Button */}
         {!todo.completed && (
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onFocus(todo);
+              onFocus?.(todo);
             }}
+            className="
+              w-12
+              h-12
+              rounded-2xl
+              bg-purple-500
+              text-white
+              flex
+              items-center
+              justify-center
+              shadow-lg
+              transition-all
+              duration-300
+              hover:scale-110
+              hover:-translate-y-1
+              active:scale-95
+              hover:rotate-3
+              hover:shadow-purple-500/40
+            "
             title="Focus Mode"
-            className="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-lg"
           >
-            <FaBullseye />
+            <Play size={20} />
           </button>
         )}
 
@@ -152,8 +254,25 @@ function TodoItem({ todo, toggleComplete, deleteTodo, editTodo, onFocus }) {
             e.stopPropagation();
             editTodo(todo);
           }}
+          className="
+    w-12
+    h-12
+    rounded-2xl
+    bg-blue-500
+    text-white
+    flex
+    items-center
+    justify-center
+    shadow-lg
+    transition-all
+    duration-300
+    hover:scale-110
+    hover:-translate-y-1
+    active:scale-95
+    hover:rotate-3
+    hover:shadow-blue-500/40
+  "
           title="Edit Task"
-          className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center hover:scale-110 hover:rotate-6 transition-all duration-300 shadow-lg"
         >
           <FaEdit />
         </button>
@@ -164,12 +283,50 @@ function TodoItem({ todo, toggleComplete, deleteTodo, editTodo, onFocus }) {
             e.stopPropagation();
             deleteTodo(todo.id);
           }}
+          className="
+    w-12
+    h-12
+    rounded-2xl
+    bg-red-500
+    text-white
+    flex
+    items-center
+    justify-center
+    shadow-lg
+    transition-all
+    duration-300
+    hover:scale-110
+    hover:-translate-y-1
+    active:scale-95
+    hover:rotate-3
+    hover:shadow-red-500/40
+  "
           title="Delete Task"
-          className="w-12 h-12 rounded-full bg-red-500 text-white flex items-center justify-center hover:scale-110 hover:rotate-6 transition-all duration-300 shadow-lg"
         >
           <FaTrash />
         </button>
       </div>
+
+      {/* Bottom Animated Line */}
+      <div
+        className="
+          absolute
+          bottom-0
+          left-0
+          h-1
+          w-0
+          bg-gradient-to-r
+          from-cyan-400
+          via-blue-500
+          to-purple-500
+          transition-all
+          duration-500
+          group-hover:w-full
+          transition-all duration-500
+hover:-translate-y-2
+hover:shadow-2xl
+        "
+      />
     </li>
   );
 }

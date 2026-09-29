@@ -322,37 +322,91 @@ function App() {
               placeholder="🔍 Search Task..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-2xl px-5 py-4 bg-white/50 border border-white/40 text-black placeholder-gray-500 focus:ring-2 focus:ring-blue-400 backdrop-blur-xl shadow-lg transition-all duration-300"
+              className="
+
+  w-full
+  rounded-2xl
+  px-5
+  py-4
+  bg-white/50
+  border
+  border-white/40
+  text-black
+  placeholder-gray-500
+  focus:outline-none
+  focus:ring-2
+  focus:ring-blue-400
+  backdrop-blur-xl
+  shadow-lg
+  transition-all
+  duration-300
+  hover:shadow-xl
+  hover:-translate-y-1
+  focus:scale-[1.01]
+"
             />
           </div>
 
           {/* Filter Buttons */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
+          <div
+            className="
+    flex flex-wrap justify-center gap-3
+    p-4
+    mb-8
+    rounded-3xl
+    bg-white/35
+    backdrop-blur-xl
+    border border-white/40
+    shadow-lg
+  "
+          >
             <button
               onClick={() => setFilter("all")}
-              className={`px-5 py-2 rounded-xl font-semibold transition ${
-                filter === "all" ? "bg-blue-600 text-white" : "bg-gray-200"
-              }`}
+              className={`px-5 py-2.5 rounded-xl font-bold
+  transition-all duration-300
+  hover:scale-105
+  hover:-translate-y-1
+  active:scale-95
+  ${
+    filter === "all"
+      ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg"
+      : "bg-white/60 text-gray-600 hover:bg-white hover:text-blue-600"
+  }
+`}
             >
               All
             </button>
 
             <button
               onClick={() => setFilter("completed")}
-              className={`px-5 py-2 rounded-xl font-semibold transition ${
-                filter === "completed"
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-200"
-              }`}
+              className={`px-5 py-2.5 rounded-xl font-bold
+  transition-all duration-300
+  hover:scale-105
+  hover:-translate-y-1
+  active:scale-95
+  ${
+    filter === "completed"
+      ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg"
+      : "bg-white/60 text-gray-600 hover:bg-white hover:text-green-600"
+  }
+`}
             >
               Completed
             </button>
 
             <button
               onClick={() => setFilter("pending")}
-              className={`px-5 py-2 rounded-xl font-semibold transition ${
-                filter === "pending" ? "bg-red-600 text-white" : "bg-gray-200"
-              }`}
+              className={`px-5 py-2.5 rounded-xl font-bold
+  transition-all duration-300
+  hover:scale-105
+  hover:-translate-y-1
+  active:scale-95
+  ${
+    filter === "pending"
+      ? "bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg"
+      : "bg-white/60 text-gray-600 hover:bg-white hover:text-red-600"
+  }
+`}
             >
               Pending
             </button>
@@ -361,14 +415,44 @@ function App() {
           <div className="flex justify-end gap-4 mb-6">
             <button
               onClick={exportPDF}
-              className="px-6 py-3 rounded-2xl bg-gradient-to-r from-red-500 to-pink-600 text-white font-bold shadow-xl hover:scale-105 transition-all"
+              className="
+  px-6
+  py-3
+  rounded-2xl
+  bg-gradient-to-r from-red-500 to-pink-600
+  text-white
+  font-bold
+  shadow-xl
+  transition-all
+  duration-300
+  hover:scale-105
+  hover:-translate-y-1
+  active:scale-95
+  hover:shadow-2xl
+  hover:shadow-red-500/40
+"
             >
               📄 Export PDF
             </button>
 
             <button
               onClick={() => setShowCalendar(true)}
-              className="px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-600 text-white font-bold shadow-xl hover:scale-105 transition-all"
+              className="
+  px-6
+  py-3
+  rounded-2xl
+  bg-gradient-to-r from-blue-500 to-cyan-600
+  text-white
+  font-bold
+  shadow-xl
+  transition-all
+  duration-300
+  hover:scale-105
+  hover:-translate-y-1
+  active:scale-95
+  hover:shadow-2xl
+  hover:shadow-blue-500/40
+"
             >
               📅 Calendar
             </button>
@@ -391,14 +475,89 @@ function App() {
           )}
 
           {/* Todo List */}
-          <TodoList
-            todos={filteredTodos}
-            toggleComplete={toggleComplete}
-            deleteTodo={deleteTodo}
-            editTodo={editTodo}
-            handleDragEnd={handleDragEnd}
-            onFocus={setFocusTodo}
-          />
+          {filteredTodos.length === 0 ? (
+            <div
+              className="
+      mt-8
+      rounded-[35px]
+      border border-white/50
+      bg-white/40
+      backdrop-blur-2xl
+      shadow-xl
+      p-10 sm:p-14
+      text-center
+      animate-[fadeIn_.5s_ease-out]
+    "
+            >
+              <div
+                className="
+        mx-auto
+        w-24
+        h-24
+        rounded-3xl
+        bg-gradient-to-br
+        from-blue-500
+        to-purple-600
+        flex
+        items-center
+        justify-center
+        text-5xl
+        shadow-xl
+        transition-all
+        duration-500
+        hover:scale-110
+        hover:rotate-6
+      "
+              >
+                📝
+              </div>
+
+              <h2 className="mt-6 text-2xl sm:text-3xl font-extrabold text-gray-800">
+                No tasks found
+              </h2>
+
+              <p className="mt-2 text-gray-500 max-w-md mx-auto">
+                {todos.length === 0
+                  ? "Start by adding your first task and stay organized."
+                  : "No tasks match your current search or filter."}
+              </p>
+
+              {todos.length === 0 && (
+                <button
+                  onClick={() => document.querySelector("input")?.focus()}
+                  className="
+          mt-6
+          px-6
+          py-3
+          rounded-2xl
+          bg-gradient-to-r
+          from-cyan-500
+          to-blue-600
+          text-white
+          font-bold
+          shadow-lg
+          transition-all
+          duration-300
+          hover:scale-105
+          hover:-translate-y-1
+          hover:shadow-2xl
+          active:scale-95
+        "
+                >
+                  ➕ Add Your First Task
+                </button>
+              )}
+            </div>
+          ) : (
+            <TodoList
+              todos={filteredTodos}
+              toggleComplete={toggleComplete}
+              deleteTodo={deleteTodo}
+              editTodo={editTodo}
+              handleDragEnd={handleDragEnd}
+              onFocus={setFocusTodo}
+            />
+          )}
           {focusTodo && (
             <FocusTimer
               todo={focusTodo}
